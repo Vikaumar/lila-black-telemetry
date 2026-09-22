@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+.pnp
+.pnp.js
+
+# Python Virtual Environments & Caches
+venv/
+preprocess/venv/
+__pycache__/
+preprocess/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Build outputs
+dist/
+frontend/dist/
+build/
+
+# Raw heavy datasets & scratch files (the processed ~6MB JSON is included in frontend/public/data)
+player_data_raw/
+player_data/
+player_data.zip
+frontend_data/
+scratch_design.html
+preprocess/debug_*.py
+preprocess/check_*.py
+preprocess/inspect_schema.py
+preprocess/add_dates.py
+
+# System files & IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
