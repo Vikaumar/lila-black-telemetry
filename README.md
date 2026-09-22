@@ -50,8 +50,8 @@ The repository comes pre-bundled with the lightweight (~6 MB) processed telemetr
 
 ```bash
 # 1. Clone repository
-git clone <your-repo-url>
-cd "Lila Assignment"
+git clone https://github.com/Vikaumar/lila-black-telemetry.git
+cd lila-black-telemetry
 
 # 2. Launch Frontend
 cd frontend
