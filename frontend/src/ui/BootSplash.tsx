@@ -1,115 +1,113 @@
 import React, { useEffect, useState } from 'react';
 
 const BOOT_LINES = [
-  { text: 'LILA BLACK TELEMETRY SYSTEM v2.0', delay: 0 },
-  { text: '> Initialising WebGL renderer...', delay: 200 },
-  { text: '> Connecting to match archive...', delay: 500 },
-  { text: '> Loading 796 match records...', delay: 900 },
-  { text: '> Authenticating sector credentials...', delay: 1300 },
-  { text: '> Calibrating map projection matrices...', delay: 1700 },
-  { text: '> SYSTEM ONLINE — ENTERING TELEMETRY', delay: 2100 },
+  { text: 'LILA BLACK TELEMETRY SYSTEM — FIELD EDITION', delay: 0, accent: true },
+  { text: '  Mounting archive node...', delay: 250 },
+  { text: '  Loading match database: 796 records found', delay: 550 },
+  { text: '  Calibrating orthographic projection...', delay: 900 },
+  { text: '  Linking sector data: AmbroseValley · GrandRift · Lockdown', delay: 1200 },
+  { text: '  Warping replay engine to current timestamp...', delay: 1550 },
+  { text: '  — SYSTEM READY —', delay: 1900, accent: true },
 ];
 
-interface BootSplashProps {
+interface Props {
   onComplete: () => void;
 }
 
-export const BootSplash: React.FC<BootSplashProps> = ({ onComplete }) => {
-  const [visibleLines, setVisibleLines] = useState<number[]>([]);
-  const [exiting, setExiting] = useState(false);
+export const BootSplash: React.FC<Props> = ({ onComplete }) => {
+  const [visible, setVisible] = useState<number[]>([]);
+  const [out, setOut] = useState(false);
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
 
-    BOOT_LINES.forEach((line, idx) => {
-      timers.push(setTimeout(() => {
-        setVisibleLines(prev => [...prev, idx]);
-      }, line.delay));
+    BOOT_LINES.forEach((l, i) => {
+      timers.push(setTimeout(() => setVisible(p => [...p, i]), l.delay));
     });
 
-    // Start exit after last line
-    timers.push(setTimeout(() => {
-      setExiting(true);
-    }, 2900));
-
-    // Complete after fade
-    timers.push(setTimeout(() => {
-      onComplete();
-    }, 3500));
+    timers.push(setTimeout(() => setOut(true), 2600));
+    timers.push(setTimeout(() => onComplete(), 3200));
 
     return () => timers.forEach(clearTimeout);
   }, []);
 
+  const progress = (visible.length / BOOT_LINES.length) * 100;
+
   return (
     <div
-      className={`fixed inset-0 z-[9999] boot-splash flex flex-col items-center justify-center transition-opacity duration-500 ${exiting ? 'opacity-0' : 'opacity-100'}`}
+      className={`fixed inset-0 z-[9999] boot-bg flex flex-col items-center justify-center transition-opacity duration-500 ${out ? 'opacity-0' : 'opacity-100'}`}
     >
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-grid-hud opacity-40 pointer-events-none" />
+      {/* Subtle grid */}
+      <div className="absolute inset-0 bg-grid-hud opacity-50 pointer-events-none" />
 
-      {/* Corner brackets */}
-      <div className="absolute top-8 left-8 w-10 h-10 border-t-2 border-l-2 border-primary-container/60" />
-      <div className="absolute top-8 right-8 w-10 h-10 border-t-2 border-r-2 border-primary-container/60" />
-      <div className="absolute bottom-8 left-8 w-10 h-10 border-b-2 border-l-2 border-primary-container/60" />
-      <div className="absolute bottom-8 right-8 w-10 h-10 border-b-2 border-r-2 border-primary-container/60" />
+      {/* Corner marks — simple right-angle lines */}
+      {[
+        'top-6 left-6 border-t border-l',
+        'top-6 right-6 border-t border-r',
+        'bottom-6 left-6 border-b border-l',
+        'bottom-6 right-6 border-b border-r',
+      ].map((cls, i) => (
+        <div
+          key={i}
+          className={`absolute w-8 h-8 ${cls} border-outline`}
+        />
+      ))}
 
-      {/* Central panel */}
-      <div className="w-full max-w-2xl px-8">
-        {/* Logo */}
-        <div className="mb-8 text-center">
-          <div className="text-primary-container font-label-sm tracking-[0.5em] text-xs mb-1 opacity-60">LILA GAMES // PRODUCT ENGINEERING</div>
-          <div className="text-primary text-4xl font-headline-lg font-bold tracking-[0.15em] text-glow-cyan animate-flicker-in">
+      {/* Central content */}
+      <div className="w-full max-w-xl px-8 animate-fade-in">
+
+        {/* Logo block */}
+        <div className="mb-10">
+          <div className="text-[10px] font-label-sm text-outline uppercase tracking-[0.3em] mb-2">
+            LILA GAMES PRODUCT ANALYTICS
+          </div>
+          <div className="text-3xl font-headline-lg font-bold text-on-surface tracking-tight leading-none mb-1">
             LILA BLACK
           </div>
-          <div className="text-primary-container font-label-md tracking-[0.4em] text-sm mt-1">
-            TELEMETRY VISUALIZATION SYSTEM
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-primary-container opacity-60" />
+            <span className="text-[11px] font-label-sm text-primary-container tracking-[0.25em] uppercase">
+              TELEMETRY
+            </span>
+            <div className="h-px flex-1 bg-primary-container opacity-60" />
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-primary-container/60 to-transparent mb-6" />
-
         {/* Boot lines */}
-        <div className="font-label-sm text-sm space-y-1.5 min-h-[180px]">
+        <div className="space-y-1 mb-8 font-label-sm text-[11px] min-h-[140px]">
           {BOOT_LINES.map((line, idx) => (
             <div
               key={idx}
-              className={`transition-all duration-300 ${visibleLines.includes(idx) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+              className={`transition-all duration-300 ${visible.includes(idx) ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'} ${line.accent ? 'text-primary-container font-bold tracking-wider' : 'text-on-surface-variant'}`}
+              style={{ transitionDelay: '0ms' }}
             >
-              <span className={idx === BOOT_LINES.length - 1 ? 'text-primary-container text-glow-cyan font-bold' : 'text-on-surface-variant'}>
-                {line.text}
-              </span>
-              {idx === visibleLines[visibleLines.length - 1] && idx < BOOT_LINES.length - 1 && (
-                <span className="text-primary-container animate-blink-cursor ml-0.5">_</span>
+              {line.text}
+              {idx === visible[visible.length - 1] && !line.accent && (
+                <span className="text-primary-container animate-blink ml-0.5">█</span>
               )}
             </div>
           ))}
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-6">
-          <div className="h-px bg-surface-container-highest overflow-hidden rounded-full">
+        {/* Progress */}
+        <div>
+          <div className="h-0.5 bg-outline-variant rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary-container transition-all ease-linear shadow-[0_0_8px_rgba(0,242,254,0.6)]"
-              style={{
-                width: `${Math.min(100, (visibleLines.length / BOOT_LINES.length) * 100)}%`,
-                transitionDuration: '400ms'
-              }}
+              className="h-full bg-primary-container transition-all duration-400 ease-linear rounded-full"
+              style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="flex justify-between mt-1 text-outline text-[10px] font-label-sm">
-            <span>BOOT SEQUENCE</span>
-            <span>{Math.round((visibleLines.length / BOOT_LINES.length) * 100)}%</span>
+          <div className="flex justify-between items-center mt-1.5">
+            <span className="text-[9px] font-label-sm text-outline tracking-wider uppercase">Boot sequence</span>
+            <span className="text-[9px] font-label-sm text-outline font-bold">{Math.round(progress)}%</span>
           </div>
         </div>
       </div>
 
-      {/* Bottom status bar */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-        <div className="flex items-center gap-2 text-[10px] font-label-sm text-outline/60">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping" />
-          <span>SYS // ARCHIVE NODE ACTIVE</span>
-        </div>
+      {/* Bottom strip */}
+      <div className="absolute bottom-5 flex items-center gap-2 text-[9px] font-label-sm text-outline">
+        <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-status-pulse" />
+        <span className="tracking-widest uppercase">Archive node active</span>
       </div>
     </div>
   );

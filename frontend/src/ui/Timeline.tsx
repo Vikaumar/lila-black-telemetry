@@ -1,214 +1,177 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useStore } from '../store/useStore';
 
-// Animated waveform bars that pulse when playing
-const WaveformBars: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => (
-  <div className="flex items-end gap-px h-4 shrink-0">
-    {[3, 7, 5, 10, 4, 8, 6, 11, 3, 7].map((h, i) => (
+/* ──────────────────────────────────────────────────────────────
+   Waveform activity indicator — only shows "life" when playing
+   ────────────────────────────────────────────────────────────── */
+const ActivityBars: React.FC<{ active: boolean }> = ({ active }) => (
+  <div className="flex items-end gap-px h-3 shrink-0">
+    {[4, 9, 5, 11, 3, 8, 6, 10].map((h, i) => (
       <div
         key={i}
-        className="w-0.5 bg-primary-container/70 rounded-full transition-all"
+        className="w-0.5 bg-primary-container/60 rounded-full transition-all"
         style={{
-          height: isPlaying ? `${h}px` : '2px',
-          animation: isPlaying ? `waveform ${0.4 + i * 0.07}s ease-in-out infinite alternate` : 'none',
-          transitionDelay: `${i * 30}ms`,
+          height: active ? `${h}px` : '2px',
+          animation: active ? `wave-bar ${0.45 + i * 0.06}s ease-in-out infinite alternate` : 'none',
         }}
       />
     ))}
   </div>
 );
 
+/* ──────────────────────────────────────────────────────────────
+   TIMELINE
+   ────────────────────────────────────────────────────────────── */
 export const Timeline: React.FC = () => {
-  const { currentTime, matchDuration, isPlaying, playbackSpeed, setFilter, selectedMatch } = useStore();
-  const requestRef = useRef<number | null>(null);
-  const lastTimeRef = useRef<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const { currentTime, matchDuration, isPlaying, playbackSpeed, setFilter } = useStore();
+  const rafRef = useRef<number | null>(null);
+  const lastRef = useRef<number | null>(null);
 
-  // Use actual match duration, with a sensible minimum fallback
   const maxTime = matchDuration > 0 ? matchDuration : 60000;
 
-  const animate = (time: number) => {
-    if (lastTimeRef.current !== null) {
-      const deltaTime = time - lastTimeRef.current;
-      const currentState = useStore.getState();
-      const maxT = currentState.matchDuration > 0 ? currentState.matchDuration : 60000;
-      let newTime = currentState.currentTime + deltaTime * currentState.playbackSpeed;
-
-      // Stop at match end
-      if (newTime >= maxT) {
-        newTime = maxT;
+  const animate = (now: number) => {
+    if (lastRef.current !== null) {
+      const dt = now - lastRef.current;
+      const s = useStore.getState();
+      const max = s.matchDuration > 0 ? s.matchDuration : 60000;
+      let next = s.currentTime + dt * s.playbackSpeed;
+      if (next >= max) {
+        next = max;
         setFilter('isPlaying', false);
       }
-
-      setFilter('currentTime', newTime);
+      setFilter('currentTime', next);
     }
-    lastTimeRef.current = time;
-
-    if (useStore.getState().isPlaying) {
-      requestRef.current = requestAnimationFrame(animate);
-    }
+    lastRef.current = now;
+    if (useStore.getState().isPlaying) rafRef.current = requestAnimationFrame(animate);
   };
 
   useEffect(() => {
     if (isPlaying) {
-      requestRef.current = requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(animate);
     } else {
-      if (requestRef.current !== null) cancelAnimationFrame(requestRef.current);
-      lastTimeRef.current = null;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      lastRef.current = null;
     }
-    return () => {
-      if (requestRef.current !== null) cancelAnimationFrame(requestRef.current);
-    };
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [isPlaying]);
 
-  const formatTime = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    if (totalSeconds < 10) {
-      const millis = Math.floor((ms % 1000) / 100);
-      return `${totalSeconds}.${millis}s`;
-    }
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  const fmt = (ms: number) => {
+    const s = Math.floor(ms / 1000);
+    const m = Math.floor(s / 60);
+    if (s < 10) return `${s}.${Math.floor((ms % 1000) / 100)}s`;
+    return `${m}:${(s % 60).toString().padStart(2, '0')}`;
   };
 
-  const progress = maxTime > 0 ? Math.min(100, (currentTime / maxTime) * 100) : 0;
+  const pct = maxTime > 0 ? Math.min(100, (currentTime / maxTime) * 100) : 0;
 
   return (
-    <footer className="relative shrink-0 z-40">
-      {/* Ambient glow from above */}
-      <div className="absolute -top-4 left-0 right-0 h-4 bg-gradient-to-t from-primary-container/5 to-transparent pointer-events-none" />
+    <footer className="shrink-0 z-40 border-t border-outline-variant bg-surface-container-low relative">
 
-      <div className="bg-surface-container-lowest border-t border-outline-variant/30 px-6 py-3 shadow-[0_-12px_40px_rgba(0,0,0,0.8)]">
-        {/* Top metadata row */}
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-3">
-            <WaveformBars isPlaying={isPlaying} />
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-label-sm text-outline uppercase tracking-wider">MATCH REPLAY</span>
-              {selectedMatch && (
-                <span className="text-[10px] font-label-sm text-primary-container/70 font-mono">
-                  {selectedMatch.substring(0, 12)}...
-                </span>
-              )}
-            </div>
+      {/* Top accent line when playing */}
+      {isPlaying && (
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary-container/40" />
+      )}
+
+      <div className="px-5 py-2.5">
+
+        {/* Status row */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2.5">
+            <ActivityBars active={isPlaying} />
+            <span className="text-[9px] font-label-sm text-outline uppercase tracking-widest">
+              Match Replay
+            </span>
+            <span className={`text-[8px] font-label-sm px-1.5 py-px rounded-sm border tracking-wider uppercase
+              ${isPlaying
+                ? 'text-error border-error/40 bg-error/10'
+                : 'text-outline border-outline-variant bg-surface-container'
+              }`}>
+              {isPlaying ? '● REC' : 'PAUSED'}
+            </span>
           </div>
-          <div className="flex items-center gap-4">
-            {/* Duration info */}
-            <div className="flex items-center gap-1.5 text-[10px] font-label-sm">
-              <span className="text-outline">DURATION</span>
-              <span className="text-on-surface font-bold">{formatTime(maxTime)}</span>
-            </div>
-            {/* Status indicator */}
-            <div className="flex items-center gap-1.5">
-              <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-rose-500 animate-pulse' : 'bg-outline'}`} />
-              <span className={`text-[10px] font-label-sm ${isPlaying ? 'text-rose-400' : 'text-outline'}`}>
-                {isPlaying ? 'REC' : 'PAUSED'}
-              </span>
-            </div>
+          <div className="flex items-center gap-4 text-[9px] font-label-sm">
+            <span className="text-outline">Duration: <span className="text-on-surface-variant font-bold">{fmt(maxTime)}</span></span>
+            <span className="text-outline">Speed: <span className="text-primary-container font-bold">{playbackSpeed}×</span></span>
           </div>
         </div>
 
-        {/* Main controls row */}
-        <div className="flex items-center gap-4 w-full">
-          {/* Play/Pause */}
+        {/* Controls row */}
+        <div className="flex items-center gap-4">
+
+          {/* Buttons */}
           <button
-            className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all shrink-0
-              ${isPlaying
-                ? 'border-rose-500 text-rose-400 hover:bg-rose-500/10 shadow-[0_0_12px_rgba(244,63,94,0.3)]'
-                : 'border-primary-container text-primary-container hover:bg-primary-container/10 shadow-[0_0_12px_rgba(0,242,254,0.25)] animate-neon-pulse'
-              }`}
-            onClick={() => setFilter('isPlaying', !isPlaying)}
-            aria-label={isPlaying ? 'Pause playback' : 'Start playback'}
+            onClick={() => { setFilter('currentTime', 0); setFilter('isPlaying', false); }}
+            className="w-7 h-7 flex items-center justify-center text-outline hover:text-on-surface transition-colors shrink-0"
+            aria-label="Reset"
           >
-            <span className="material-symbols-outlined text-2xl">
+            <span className="material-symbols-outlined text-base">skip_previous</span>
+          </button>
+
+          <button
+            onClick={() => setFilter('isPlaying', !isPlaying)}
+            className={`w-9 h-9 flex items-center justify-center border transition-all shrink-0
+              ${isPlaying
+                ? 'border-error/60 text-error bg-error/10 hover:bg-error/20'
+                : 'border-primary-container/60 text-primary-container bg-primary-container/10 hover:bg-primary-container/20'
+              }`}
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+          >
+            <span className="material-symbols-outlined text-xl">
               {isPlaying ? 'pause' : 'play_arrow'}
             </span>
           </button>
 
-          {/* Reset */}
-          <button
-            onClick={() => { setFilter('currentTime', 0); setFilter('isPlaying', false); }}
-            className="w-8 h-8 rounded flex items-center justify-center text-outline hover:text-primary-container hover:bg-surface-container transition-all shrink-0"
-            aria-label="Reset to beginning"
-          >
-            <span className="material-symbols-outlined text-lg">skip_previous</span>
-          </button>
-
-          {/* Time display */}
-          <div className="shrink-0 w-20 text-right">
-            <div className="text-base font-bold font-label-md text-on-surface leading-none tracking-wider">
-              {formatTime(currentTime)}
-            </div>
+          {/* Current time */}
+          <div className="shrink-0 w-16 text-right">
+            <span className="text-base font-bold font-label-md text-on-surface leading-none">{fmt(currentTime)}</span>
           </div>
 
           {/* Scrubber */}
-          <div
-            className="relative flex-1 h-6 flex items-center cursor-pointer group"
-            onMouseDown={() => setIsDragging(true)}
-            onMouseUp={() => setIsDragging(false)}
-          >
-            {/* Track bg */}
-            <div className="absolute inset-x-0 h-1 bg-surface-container-highest rounded-full overflow-hidden">
-              {/* Filled portion */}
+          <div className="relative flex-1 flex items-center group h-8">
+            {/* Track */}
+            <div className="absolute inset-x-0 h-0.5 bg-outline-variant">
+              {/* Progress fill */}
               <div
-                className="absolute left-0 top-0 bottom-0 bg-primary-container rounded-full"
-                style={{
-                  width: `${progress}%`,
-                  boxShadow: progress > 0 ? '0 0 8px rgba(0, 242, 254, 0.6)' : 'none'
-                }}
+                className="absolute left-0 top-0 bottom-0 bg-primary-container transition-none"
+                style={{ width: `${pct}%` }}
               />
-              {/* Ghost shimmer on track */}
-              {isPlaying && (
-                <div
-                  className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full"
-                  style={{
-                    left: `${Math.max(0, progress - 3)}%`,
-                    transition: 'left 0.1s linear'
-                  }}
-                />
-              )}
             </div>
 
-            {/* Playhead diamond */}
+            {/* Playhead — a vertical tick, not a diamond */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-primary-container pointer-events-none transition-transform group-hover:scale-125 z-10"
-              style={{
-                left: `calc(${progress}% - 6px)`,
-                boxShadow: '0 0 10px rgba(0, 242, 254, 0.8), 0 0 20px rgba(0, 242, 254, 0.4)',
-                transition: isDragging ? 'none' : 'left 0.05s linear',
-              }}
+              className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4 bg-primary-container pointer-events-none transition-none group-hover:h-5"
+              style={{ left: `${pct}%` }}
             />
 
-            {/* Invisible range input on top */}
+            {/* Invisible range input */}
             <input
               type="range"
-              className="absolute inset-0 w-full opacity-0 cursor-pointer z-20 h-full"
-              min="0"
+              className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+              min={0}
               max={maxTime}
               value={currentTime}
-              onChange={(e) => setFilter('currentTime', parseInt(e.target.value))}
+              onChange={e => setFilter('currentTime', parseInt(e.target.value))}
             />
           </div>
 
           {/* Total time */}
-          <div className="shrink-0 w-20">
-            <div className="text-xs font-label-sm text-outline">/ {formatTime(maxTime)}</div>
+          <div className="shrink-0 text-[10px] font-label-sm text-outline">
+            / {fmt(maxTime)}
           </div>
 
           {/* Speed pills */}
-          <div className="flex items-center bg-surface-container rounded-lg p-0.5 gap-0.5 border border-outline-variant/30 shrink-0">
-            {[1, 5, 10, 50, 100].map(speed => (
+          <div className="flex items-center gap-px shrink-0">
+            {[1, 5, 10, 50, 100].map(spd => (
               <button
-                key={speed}
-                className={`px-2.5 py-1.5 text-xs font-label-md rounded transition-all ${
-                  playbackSpeed === speed
-                    ? 'bg-primary-container text-background font-bold shadow-[0_0_8px_rgba(0,242,254,0.5)]'
-                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
-                }`}
-                onClick={() => setFilter('playbackSpeed', speed)}
+                key={spd}
+                onClick={() => setFilter('playbackSpeed', spd)}
+                className={`px-2 py-1 text-[10px] font-label-sm transition-all border-y border-l last:border-r
+                  ${playbackSpeed === spd
+                    ? 'bg-primary-container text-on-primary font-bold border-primary-container'
+                    : 'bg-surface-container text-on-surface-variant hover:text-on-surface border-outline-variant hover:border-outline'
+                  }`}
               >
-                {speed}x
+                {spd}×
               </button>
             ))}
           </div>

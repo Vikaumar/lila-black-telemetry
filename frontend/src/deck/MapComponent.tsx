@@ -127,7 +127,7 @@ export const MapComponent: React.FC = () => {
         data: paths,
         getPath: (d: any) => d.path,
         getTimestamps: (d: any) => d.timestamps,
-        getColor: (d: any) => d.isBot ? [168, 85, 247] : [0, 242, 254], // Bot: Purple, Human: Cyan
+        getColor: (d: any) => d.isBot ? [143, 158, 114] : [212, 137, 26], // Bot: Olive green, Human: Amber gold
         opacity: 0.85,
         widthMinPixels: 2.5,
         jointRounded: true,
@@ -155,10 +155,10 @@ export const MapComponent: React.FC = () => {
         data: events,
         getPosition: (d: any) => [d.x, d.z],
         getFillColor: (d: any) => {
-          if (d.type === 'KilledByStorm') return [168, 85, 247]; // Purple
-          if (d.type.includes('Kill')) return [244, 63, 94];     // Rose / Red
-          if (d.type === 'Loot') return [52, 211, 153];           // Emerald green
-          return [249, 115, 22];                                 // Orange for Killed
+          if (d.type === 'KilledByStorm') return [156, 143, 122]; // Muted taupe for storm
+          if (d.type.includes('Kill'))   return [232, 90, 79];    // Rust red for kills
+          if (d.type === 'Loot')         return [80, 180, 130];   // Muted green for loot
+          return [200, 120, 60];                                  // Burnt orange for deaths
         },
         getRadius: 12,
         radiusMinPixels: 5,
@@ -187,17 +187,17 @@ export const MapComponent: React.FC = () => {
             const mins = Math.floor(t / 60);
             const secs = t % 60;
             return {
-              html: `<div style="font-family:monospace;font-size:11px;line-height:1.6;padding:2px 0">
-                <div style="color:#00f2fe;font-weight:bold;margin-bottom:2px">${info.object.type.toUpperCase()}</div>
-                <div style="color:#aab8c2">Player: <span style="color:#e8fbff">${info.object.user_id?.substring(0, 10) || 'N/A'}</span></div>
-                <div style="color:#aab8c2">Time: <span style="color:#ffcf90">${mins}:${secs.toString().padStart(2,'0')}</span></div>
+              html: `<div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;padding:2px 0">
+                <div style="color:#D4891A;font-weight:bold;letter-spacing:0.1em;margin-bottom:3px">${info.object.type.toUpperCase()}</div>
+                <div style="color:#A09880">Player: <span style="color:#EDE8DC">${info.object.user_id?.substring(0, 12) || 'N/A'}</span></div>
+                <div style="color:#A09880">Time: <span style="color:#F5DFA0">${mins}:${secs.toString().padStart(2,'0')}</span></div>
               </div>`,
               style: {
-                backgroundColor: 'rgba(14,18,28,0.95)',
-                border: '1px solid rgba(0,242,254,0.3)',
-                borderRadius: '6px',
+                backgroundColor: 'rgba(20,18,16,0.96)',
+                border: '1px solid rgba(90,82,64,0.5)',
+                borderRadius: '2px',
                 padding: '8px 12px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.8), 0 0 12px rgba(0,242,254,0.1)',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.7)',
               }
             };
           }
@@ -207,9 +207,9 @@ export const MapComponent: React.FC = () => {
 
       {/* Loading overlay */}
       {loading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-30">
-          <div className="w-8 h-8 border-2 border-primary-container/30 border-t-primary-container rounded-full animate-spin mb-3" />
-          <div className="text-xs font-label-sm text-primary-container/70 tracking-widest">LOADING MATCH DATA...</div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 z-30">
+          <div className="w-6 h-6 border-2 border-outline border-t-primary-container animate-spin-ring mb-3 rounded-full" />
+          <div className="text-[10px] font-label-sm text-outline tracking-widest uppercase">Loading match data</div>
         </div>
       )}
 
@@ -221,18 +221,19 @@ export const MapComponent: React.FC = () => {
         </div>
       )}
 
-      {/* Corner HUD overlays */}
-      <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
-        <div className="flex items-center gap-1.5 bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant/30 rounded px-2 py-1">
+      {/* Top-left: map name chip */}
+      <div className="absolute top-3 left-3 pointer-events-none">
+        <div className="flex items-center gap-1.5 bg-surface-container-low/90 border border-outline-variant px-2.5 py-1">
           <span className="material-symbols-outlined text-xs text-primary-container">map</span>
-          <span className="text-[10px] font-label-sm text-primary-container/80 tracking-wider">{selectedMap.toUpperCase()}</span>
+          <span className="text-[10px] font-label-sm text-on-surface-variant tracking-wider uppercase">{selectedMap}</span>
         </div>
       </div>
 
-      <div className="absolute top-3 right-3 flex items-center gap-1.5 pointer-events-none">
-        <div className="bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant/30 rounded px-2 py-1">
-          <span className="text-[10px] font-label-sm text-outline tracking-wider">
-            {matchData ? `${matchData.paths?.length || 0} AGENTS` : '—'}
+      {/* Top-right: agent count */}
+      <div className="absolute top-3 right-3 pointer-events-none">
+        <div className="bg-surface-container-low/90 border border-outline-variant px-2.5 py-1">
+          <span className="text-[10px] font-label-sm text-outline tracking-wider uppercase">
+            {matchData ? `${matchData.paths?.length || 0} Agents` : '—'}
           </span>
         </div>
       </div>

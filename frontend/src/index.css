@@ -1,125 +1,126 @@
 @import "tailwindcss";
 
-@theme {
-  --color-surface-tint: #00dce6;
-  --color-on-secondary-container: #694300;
-  --color-background: #0a0c12;
-  --color-surface-container-highest: #2a2d36;
-  --color-secondary-container: #ffaa00;
-  --color-surface-container-high: #1f222a;
-  --color-on-tertiary-container: #c00043;
-  --color-outline: #849495;
-  --color-surface-bright: #363941;
-  --color-on-secondary-fixed: #291800;
-  --color-secondary: #ffcf90;
-  --color-surface-container-low: #141720;
-  --color-on-primary-container: #006a70;
-  --color-surface-dim: #0a0c12;
-  --color-error: #ffb4ab;
-  --color-on-tertiary: #670020;
-  --color-on-primary: #00373a;
-  --color-tertiary: #fff5f5;
-  --color-surface-variant: #2a2d36;
-  --color-outline-variant: #2e3d3f;
-  --color-error-container: #93000a;
-  --color-on-primary-fixed: #002022;
-  --color-on-tertiary-fixed: #400011;
-  --color-on-surface: #dde4f0;
-  --color-inverse-primary: #00696f;
-  --color-secondary-fixed-dim: #ffb952;
-  --color-on-background: #dde4f0;
-  --color-primary: #e8fbff;
-  --color-surface-container: #171a22;
-  --color-on-primary-fixed-variant: #004f53;
-  --color-on-secondary-fixed-variant: #633f00;
-  --color-primary-fixed: #6ff6ff;
-  --color-surface-container-lowest: #070911;
-  --color-primary-container: #00f2fe;
-  --color-on-secondary: #452b00;
-  --color-secondary-fixed: #ffddb4;
-  --color-on-error-container: #ffdad6;
-  --color-on-tertiary-fixed-variant: #910030;
-  --color-on-surface-variant: #aab8c2;
-  --color-inverse-on-surface: #2d3038;
-  --color-inverse-surface: #e1e2ec;
-  --color-primary-fixed-dim: #00dce6;
-  --color-surface: #0a0c12;
-  --color-tertiary-fixed: #ffd9dc;
-  --color-on-error: #690005;
-  --color-tertiary-fixed-dim: #ffb2ba;
-  --color-tertiary-container: #ffcfd3;
+/* ============================================================
+   LILA BLACK — TELEMETRY SYSTEM
+   Design System: Tactical Briefing
+   Palette: Charcoal base · Amber gold accent · Cream text
+   Inspired by: VALORANT analytics · Riot Games · Military ops
+   ============================================================ */
 
+@theme {
+  /* --- Base surfaces (warm charcoal, NOT cold blue-black) --- */
+  --color-background:                 #0F0E0C;
+  --color-surface:                    #141210;
+  --color-surface-dim:                #0F0E0C;
+  --color-surface-bright:             #2A2720;
+  --color-surface-container-lowest:   #0C0B09;
+  --color-surface-container-low:      #191610;
+  --color-surface-container:          #1E1B15;
+  --color-surface-container-high:     #26231C;
+  --color-surface-container-highest:  #302C23;
+
+  /* --- Text (cream, not electric white) --- */
+  --color-on-background:              #EDE8DC;
+  --color-on-surface:                 #EDE8DC;
+  --color-on-surface-variant:         #A09880;
+  --color-outline:                    #5C5545;
+  --color-outline-variant:            #332F26;
+
+  /* --- Amber gold accent (the ONE color that pops) --- */
+  --color-primary:                    #F5DFA0;   /* light amber for text-on-primary */
+  --color-primary-container:          #D4891A;   /* the main accent gold */
+  --color-on-primary:                 #0F0E0C;
+  --color-on-primary-container:       #4A2E00;
+  --color-primary-fixed:              #F0C060;
+  --color-primary-fixed-dim:          #B87214;
+
+  /* --- Semantic: kills (red) --- */
+  --color-error:                      #E85A4F;
+  --color-error-container:            #5C1E18;
+  --color-on-error:                   #F8D0CE;
+  --color-on-error-container:         #F8D0CE;
+
+  /* --- Secondary: muted olive for bots/AI --- */
+  --color-secondary:                  #8F9E72;
+  --color-secondary-container:        #4A5534;
+  --color-on-secondary:               #EDE8DC;
+  --color-on-secondary-container:     #CED8B0;
+
+  /* --- Tertiary: muted dust for storm / misc --- */
+  --color-tertiary:                   #9C8F7A;
+  --color-tertiary-container:         #3D3428;
+  --color-on-tertiary:                #EDE8DC;
+  --color-on-tertiary-container:      #D4C8B0;
+
+  /* Legacy tokens needed by some components */
+  --color-surface-tint:               #D4891A;
+  --color-inverse-surface:            #EDE8DC;
+  --color-inverse-on-surface:         #1E1B15;
+  --color-inverse-primary:            #8A5800;
+
+  /* --- Spacing --- */
+  --spacing-space-xs: 0.25rem;
   --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
   --spacing-space-lg: 1.5rem;
   --spacing-space-xl: 2.5rem;
-  --spacing-space-xs: 0.25rem;
   --spacing-gutter: 1rem;
   --spacing-gutter-desktop: 1.5rem;
-  --spacing-space-md: 1rem;
-  --spacing-margin-desktop: 2rem;
   --spacing-margin: 1rem;
+  --spacing-margin-desktop: 2rem;
 
+  /* --- Fonts --- */
   --font-label-md: "JetBrains Mono";
-  --font-body-lg: "Space Grotesk";
-  --font-headline-lg-mobile: "Space Grotesk";
-  --font-headline-md: "Space Grotesk";
-  --font-body-md: "Space Grotesk";
   --font-label-lg: "JetBrains Mono";
-  --font-headline-lg: "Space Grotesk";
   --font-label-sm: "JetBrains Mono";
-  --font-headline-xl-mobile: "Space Grotesk";
-  --font-headline-xl: "Space Grotesk";
+  --font-body-md: "Space Grotesk";
+  --font-body-lg: "Space Grotesk";
   --font-body-sm: "Space Grotesk";
+  --font-headline-md: "Space Grotesk";
+  --font-headline-lg: "Space Grotesk";
+  --font-headline-xl: "Space Grotesk";
+  --font-headline-lg-mobile: "Space Grotesk";
+  --font-headline-xl-mobile: "Space Grotesk";
 }
 
+/* ============================================================
+   BASE RESET
+   ============================================================ */
 body {
   margin: 0;
   padding: 0;
   background-color: var(--color-background);
   color: var(--color-on-background);
   @apply antialiased overflow-hidden select-none;
+  font-family: "Space Grotesk", system-ui, sans-serif;
 }
 
-/* === GRID HUD === */
+/* ============================================================
+   SUBTLE GRID — very faint, warm toned
+   ============================================================ */
 .bg-grid-hud {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(0, 242, 254, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 242, 254, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-image:
+    linear-gradient(to right, rgba(90, 82, 64, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(90, 82, 64, 0.07) 1px, transparent 1px);
 }
 
-/* === SCAN LINE overlay === */
-.bg-scanlines::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
-  );
-  z-index: 1;
-}
-
-/* === SCROLLBAR === */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+.custom-scrollbar::-webkit-scrollbar { width: 3px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: var(--color-outline-variant);
-  border-radius: 4px;
+  border-radius: 2px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-container);
+  background: var(--color-outline);
 }
 
-/* === MATERIAL ICONS === */
+/* ============================================================
+   MATERIAL ICONS
+   ============================================================ */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -135,94 +136,128 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* === GLOWING TEXT === */
-.text-glow-cyan {
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.8), 0 0 20px rgba(0, 242, 254, 0.4);
+/* ============================================================
+   ACCENT UTILITIES — amber, no glow
+   ============================================================ */
+.accent-bar {
+  background: linear-gradient(90deg, var(--color-primary-container), transparent);
 }
-.text-glow-amber {
-  text-shadow: 0 0 8px rgba(251, 191, 36, 0.8), 0 0 20px rgba(251, 191, 36, 0.4);
+.border-accent {
+  border-color: var(--color-primary-container);
 }
-
-/* === NEON BOX GLOW === */
-.border-glow-cyan {
-  box-shadow: 0 0 12px rgba(0, 242, 254, 0.25), inset 0 0 12px rgba(0, 242, 254, 0.04);
-}
-.border-glow-rose {
-  box-shadow: 0 0 12px rgba(244, 63, 94, 0.2), inset 0 0 6px rgba(244, 63, 94, 0.04);
+.text-accent {
+  color: var(--color-primary-container);
 }
 
-/* === KEYFRAME ANIMATIONS === */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.7); }
+/* ============================================================
+   PANEL SURFACES — elevation via tonal layers, not blur
+   ============================================================ */
+.panel-0 { background: var(--color-background); }
+.panel-1 { background: var(--color-surface-container-low); }
+.panel-2 { background: var(--color-surface-container); }
+.panel-3 { background: var(--color-surface-container-high); }
+
+/* ============================================================
+   TACTICAL DIVIDER — horizontal rule with amber pip
+   ============================================================ */
+.tac-divider {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
 }
-@keyframes scan-sweep {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0; }
+.tac-divider::before,
+.tac-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-outline-variant);
 }
-@keyframes flicker-in {
-  0% { opacity: 0; }
-  10% { opacity: 0.8; }
-  12% { opacity: 0.2; }
-  14% { opacity: 1; }
-  20% { opacity: 0.6; }
-  22% { opacity: 1; }
-  100% { opacity: 1; }
+
+/* ============================================================
+   KEYFRAMES — minimal, purposeful
+   ============================================================ */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes neon-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(0,242,254,0.35), 0 0 20px rgba(0,242,254,0.15); }
-  50% { box-shadow: 0 0 16px rgba(0,242,254,0.6), 0 0 40px rgba(0,242,254,0.25); }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-@keyframes blink-cursor {
+@keyframes boot-line {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+@keyframes blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  50%       { opacity: 0; }
 }
-@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slide-in-bottom {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes waveform {
-  0%, 100% { height: 4px; }
-  50% { height: 14px; }
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
 }
 
-.animate-pulse-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-.animate-flicker-in {
-  animation: flicker-in 0.8s ease forwards;
-}
-.animate-neon-pulse {
-  animation: neon-pulse 3s ease-in-out infinite;
-}
-.animate-blink-cursor {
-  animation: blink-cursor 1s step-start infinite;
-}
-.animate-slide-in-left {
-  animation: slide-in-left 0.4s ease forwards;
-}
-.animate-slide-in-bottom {
-  animation: slide-in-bottom 0.35s ease forwards;
-}
-.animate-scan-sweep {
-  animation: scan-sweep 4s ease-in-out infinite 6s;
+.animate-fade-up   { animation: fade-up  0.35s ease both; }
+.animate-fade-in   { animation: fade-in  0.4s ease both; }
+.animate-boot-line { animation: boot-line 0.3s ease both; }
+.animate-spin-ring { animation: spinner 0.9s linear infinite; }
+.animate-blink     { animation: blink 1.1s step-start infinite; }
+.animate-status-pulse { animation: status-pulse 2.5s ease-in-out infinite; }
+
+/* ============================================================
+   BOOT SPLASH
+   ============================================================ */
+.boot-bg {
+  background: var(--color-background);
 }
 
-/* === BOOT SPLASH === */
-.boot-splash {
-  background: radial-gradient(ellipse at center, #0d1424 0%, #070911 100%);
+/* ============================================================
+   TOGGLE SWITCH — no glow, just tonal
+   ============================================================ */
+.toggle-track {
+  width: 32px;
+  height: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container);
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.toggle-track.on {
+  background: color-mix(in srgb, var(--color-primary-container) 20%, transparent);
+  border-color: var(--color-primary-container);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-outline);
+  transition: left 0.2s, background 0.2s;
+}
+.toggle-track.on .toggle-thumb {
+  left: 18px;
+  background: var(--color-primary-container);
 }
 
-/* === GLASS PANEL === */
-.glass-panel {
-  background: rgba(20, 23, 32, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 242, 254, 0.12);
+/* ============================================================
+   WAVEFORM BARS — timeline indicator
+   ============================================================ */
+@keyframes wave-bar {
+  0%, 100% { height: 3px; }
+  50%       { height: 12px; }
+}
+
+/* ============================================================
+   SELECT OVERRIDE — match theme
+   ============================================================ */
+select option {
+  background-color: #1E1B15;
+  color: #EDE8DC;
 }
