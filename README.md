@@ -24,7 +24,7 @@
 
 ## 🌐 Live Deployment
 
-- **Hosted URL:** *(Add your deployed Vercel / Netlify / Cloudflare link here, e.g., `https://lila-telemetry.vercel.app`)*
+- **Hosted Live URL:** **[https://lila-black-telemetry.vercel.app/](https://lila-black-telemetry.vercel.app/)**
 - **Evaluator Walkthrough:** [`WALKTHROUGH.md`](./WALKTHROUGH.md)
 - **Technical Architecture:** [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 - **Game Insights & Metrics:** [`INSIGHTS.md`](./INSIGHTS.md)

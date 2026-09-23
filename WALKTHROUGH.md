@@ -7,7 +7,7 @@ This walkthrough provides the evaluating team with a structured, step-by-step ve
 ## Quick Access
 
 - **Local URL:** `http://localhost:5173`
-- **Hosted Live URL:** *(Insert deployed Vercel / Netlify / Railway link here)*
+- **Hosted Live URL:** **[https://lila-black-telemetry.vercel.app/](https://lila-black-telemetry.vercel.app/)**
 - **Data Preloaded:** 796 matches across 3 tactical maps (AmbroseValley, GrandRift, Lockdown)
 
 ---
